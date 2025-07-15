@@ -1,7 +1,6 @@
 streamlit
 diffusers
 transformers
-accelerate
 torch
 pillow
 pandas
