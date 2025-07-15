@@ -11,10 +11,9 @@ import io
 @st.cache_resource
 def load_pipe():
     pipe = StableDiffusionPipeline.from_pretrained(
-        "Lykon/dreamshaper-7",
-        torch_dtype=torch.float16
-    ).to("cuda")
-    pipe.enable_attention_slicing()
+        "CompVis/stable-diffusion-v1-4",
+        torch_dtype=torch.float32
+    ).to("cpu")
     return pipe
 
 pipe = load_pipe()
@@ -79,8 +78,8 @@ def generate_ads(brand, product, audience, style, ad_count, platform):
     variant_labels = ['A', 'B', 'C', 'D', 'E']
 
     for i in range(ad_count):
-        generator = torch.Generator("cuda").manual_seed(np.random.randint(100))
-        image = pipe(prompt, generator=generator, num_inference_steps=12).images[0]
+        torch.manual_seed(np.random.randint(100))  # CPU compatible
+        image = pipe(prompt, num_inference_steps=12).images[0]
         if platform in ASPECT_RATIOS:
             image = image.resize(ASPECT_RATIOS[platform])
 
